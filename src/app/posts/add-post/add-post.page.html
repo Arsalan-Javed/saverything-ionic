@@ -1,0 +1,124 @@
+<ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button [defaultHref]="back"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Share Post</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="forms-validations-content">
+    <form class="validations-form" [formGroup]="validationsForm">
+      <ion-list class="inputs-list" lines="full">
+        <!-- <ion-list-header>
+          <ion-label class="header-title">Basic Validations</ion-label>
+        </ion-list-header> -->
+        <ion-item class="input-item item-label-floating">
+          <ion-label position="floating">Title</ion-label>
+          <ion-input type="text" formControlName="title" clearInput required></ion-input>
+        </ion-item>
+        <div class="error-container">
+          <ng-container *ngFor="let validation of validations.title">
+            <div class="error-message" *ngIf="validationsForm.get('title').hasError(validation.type) && (validationsForm.get('title').dirty || validationsForm.get('title').touched)">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>{{ validation.message }}</span>
+            </div>
+          </ng-container>
+        </div>
+        <ion-item class="input-item item-label-floating">
+          <ion-label position="floating">Description</ion-label>
+          <ion-textarea  rows="2"  type="text" formControlName="description" clearInput></ion-textarea>
+        </ion-item>
+        <div class="error-container">
+          <ng-container *ngFor="let validation of validations.description">
+            <div class="error-message" *ngIf="validationsForm.get('description').hasError(validation.type) && (validationsForm.get('description').dirty || validationsForm.get('description').touched)">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>{{ validation.message }}</span>
+            </div>
+          </ng-container>
+        </div>
+
+        <ion-item class="input-item item-label-floating">
+          <ion-label position="floating">Category</ion-label>
+          <ion-select formControlName="category_id" cancelText="Cancel" okText="OK">
+            <ion-select-option *ngFor="let category of categoriesList" [value]="category.id" >{{ category.title }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div class="error-container">
+          <ng-container *ngFor="let validation of validations.category_id">
+            <div class="error-message" *ngIf="validationsForm.get('category_id').hasError(validation.type) && (validationsForm.get('category_id').dirty || validationsForm.get('category_id').touched)">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>{{ validation.message }}</span>
+            </div>
+          </ng-container>
+        </div>
+
+        <ion-item class="input-item item-label-floating">
+          <ion-label position="floating">Tags</ion-label>
+          <ion-input type="text"  clearInput (keyup.enter)="addTags($event)"></ion-input>
+        </ion-item>
+  
+        <ion-row *ngIf="tags.length>0" class="item-tags">
+          <ion-col class="tag-wrapper" *ngFor="let tag of tags">
+            <span class="item-tag">
+              <app-text-shell [data]="tag"></app-text-shell>
+            </span>
+          </ion-col>
+        </ion-row>
+
+      </ion-list>
+  
+      <div class="cover-wrapper">
+        <a class="cover-anchor" (click)="btnfile.click()" >
+          <app-image-shell class="cover-image add-overlay" animation="spinner" [display]="'cover'" [src]="title_image.result">
+            <app-aspect-ratio [ratio]="{w:35, h:15}">
+              <div class="cover-icon-wrapper">
+                <app-aspect-ratio [ratio]="{w: 20, h: 7}">
+                  <app-image-shell *ngIf="!is_title_image_selected" class="item-icon" [src]="'./assets/sample-images/food/la-olla-icon.svg'"></app-image-shell>
+                </app-aspect-ratio>
+              </div>
+            </app-aspect-ratio>
+          </app-image-shell>
+        </a>
+          <input type="file" #btnfile (change)="uploadImage($event.target.files)" />
+      </div>
+      <div class="error-container">
+        <ng-container *ngIf="!is_title_image_selected && is_Submitted" >
+          <div class="error-message">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            <span>Title image is required</span>
+          </div>
+        </ng-container>
+      </div>
+
+      <ion-row class="pictures-row">
+        <ion-col class="picture-wrapper">
+          <app-aspect-ratio [ratio]="{w: 1, h: 1}">
+            <app-image-shell class="picture-image" [src]="'./assets/sample-images/food/Cat1Foto5-1.1.png'" [alt]="'food image'"></app-image-shell>
+          </app-aspect-ratio>
+          <a class="has-more-pictures" (click)="btnAdditionalfile.click()" >
+            <span class="pictures-count pictures-add"></span>
+          </a>
+          <input type="file" #btnAdditionalfile (change)="uploadAdditionalImage($event.target.files)" />
+        </ion-col>
+        <ion-col class="picture-wrapper" *ngFor="let picture of additional_pictures.slice(0, 4); let i = index">
+          <app-aspect-ratio [ratio]="{w: 1, h: 1}">
+            <app-image-shell class="picture-image" [src]="picture.result" [alt]="'food image'"></app-image-shell>
+          </app-aspect-ratio>
+          <a class="has-more-pictures" *ngIf="i == 3 && additional_pictures.length > 4">
+            <span class="pictures-count">{{ additional_pictures.length - 4 }}</span>
+          </a>
+        </ion-col>
+      </ion-row>
+
+      <div class="error-container">
+        <ng-container *ngIf="additional_pictures.length<=0 && is_Submitted" >
+          <div class="error-message">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            <span>Additional image is required</span>
+          </div>
+        </ng-container>
+      </div>
+      <ion-button class="submit-btn" type="button" (click)="onSubmit()" expand="block" fill="solid" [disabled]="!validationsForm.valid">{{button_title}}</ion-button>
+    </form>
+  </ion-content>

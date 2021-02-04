@@ -12,7 +12,7 @@ import { MenuController } from '@ionic/angular';
 export class TabsPage  {
 
   constructor(public menu: MenuController) { }
-
+z
   ionViewWillEnter() {
     this.menu.enable(true);
   }

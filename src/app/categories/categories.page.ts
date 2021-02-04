@@ -20,7 +20,7 @@ export class CategoriesPage {
   subscriptions: Subscription;
 
   listing: CategoriesModel;
-
+  colors = ['red','green','pink','yellow','blue']; // also include css class
   @HostBinding('class.is-shell') get isShell() {
     return (this.listing && this.listing.isShell) ? true : false;
   }
@@ -47,7 +47,7 @@ export class CategoriesPage {
           element.size = '6';
           element.ratio = {w:1, h:1};
         }
-        element.class = element.name + '-category';
+        element.class = this.colors[Math.floor((Math.random() * this.colors.length) - 1)] + '-category';
         element.src = './assets/sample-images/categories/' + element.name + '.png';
       });
       this.listing.items.sort((a, b) => {
@@ -57,8 +57,8 @@ export class CategoriesPage {
   }
 
 
-  openCategory(name,category_id){
-    this.router.navigate(['app/categories/'+name+'/'+category_id], { replaceUrl: true });
+  openCategory(category_id){
+    this.router.navigate(['app/categories/posts/'+category_id], { replaceUrl: true });
   }
   
   

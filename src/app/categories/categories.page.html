@@ -15,7 +15,7 @@
       <ion-col class="category-item" [ngClass]="item.class"  [size]="item.size">
         <app-image-shell [display]="'cover'" class="category-cover" animation="spinner" [src]="item.src">
           <app-aspect-ratio [ratio]="item.ratio">
-            <a class="category-anchor" (click)="openCategory(item.name,item.id)">
+            <a class="category-anchor" (click)="openCategory(item.id)">
               <h2 class="category-title">{{ item.title }}</h2>
             </a>
           </app-aspect-ratio>
