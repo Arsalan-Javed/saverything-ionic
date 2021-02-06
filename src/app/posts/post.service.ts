@@ -143,32 +143,23 @@ export class PostService {
       $this.saveFiles([post.title_picture],post.category_id).then(title_response=>{
         if(title_response.status){
           $this.saveFiles(post.additional_pictures,post.category_id).then(additional_response=>{
+            
             if(additional_response.status){
-              post.title_picture = title_response.filepaths.length>0 ? title_response.filepaths[0] : "";
 
-              var existing_images = post.additional_pictures.filter(p=>p.is_existing==true).map(p=>p.result);
-              post.additional_pictures =  additional_response.filepaths.concat(existing_images);
-              
-              if(post.post_id){ // Edit
-
-                if(!post.title_picture)
-                   delete post.title_picture;
-                if(post.additional_pictures.length<=0)
-                   delete post.additional_pictures;
-
-                var post_id =  post.post_id;
-                delete post.post_id;
-                this.afs.collection(this.POSTS).doc(post_id).update(post).then(res => {
-                  resolve({status:true, message:'Posted Successfully'});
-                }).catch(function (error) { resolve({status:false, message:error});});
-  
-
+              if(post.order.filter(p=>p.type=='img' && !p.is_existing).length>0)
+              {
+                //save other images
+                $this.saveFiles(post.order.filter(p=>p.type=='img' && !p.is_existing).map(p=>({file:p.file})),post.category_id).then(other_response=>{
+                  if(other_response.status){
+                    $this.doPost($this,resolve,post,title_response,additional_response,other_response);
+                  }
+                  else{
+                    resolve({status:false, message:'Other Images not saved'});
+                  }
+                });
               }
               else{
-                delete post.post_id;
-                $this.afs.collection($this.POSTS).add(post).then(function (docRef) {
-                  resolve({status:true, message:'Posted Successfully'});
-                }).catch(function (error) { resolve({status:false, message:error});});
+                  $this.doPost($this,resolve,post,title_response,additional_response);
               }
             }
             else
@@ -179,6 +170,42 @@ export class PostService {
           resolve({status:false, message:'Title Image not saved'});
       });
      });
+  }
+
+  doPost($this,resolve,post,title_response,additional_response,other_response=null){
+    post.title_picture = title_response.filepaths.length>0 ? title_response.filepaths[0] : "";
+
+    var existing_images = post.additional_pictures.filter(p=>p.is_existing==true).map(p=>p.result);
+    post.additional_pictures =  additional_response.filepaths.concat(existing_images);
+    
+    if(other_response){
+      post.order.filter(p=>p.type=='img' && !p.is_existing).forEach((element,index) => {
+        element.value = other_response.filepaths[index] ? other_response.filepaths[index] : '';
+        delete element['file']; 
+      });
+    }
+
+    if(post.post_id){ // Edit
+
+      if(!post.title_picture)
+         delete post.title_picture;
+      if(post.additional_pictures.length<=0)
+         delete post.additional_pictures;
+
+      var post_id =  post.post_id;
+      delete post.post_id;
+      this.afs.collection(this.POSTS).doc(post_id).update(post).then(res => {
+        resolve({status:true, message:'Posted Successfully'});
+      }).catch(function (error) { resolve({status:false, message:error});});
+
+
+    }
+    else{
+      delete post.post_id;
+      $this.afs.collection($this.POSTS).add(post).then(function (docRef) {
+        resolve({status:true, message:'Posted Successfully'});
+      }).catch(function (error) { resolve({status:false, message:error});});
+    }
   }
 
   saveFiles(files,category_id){

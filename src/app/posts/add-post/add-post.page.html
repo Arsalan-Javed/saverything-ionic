@@ -13,59 +13,140 @@
         <!-- <ion-list-header>
           <ion-label class="header-title">Basic Validations</ion-label>
         </ion-list-header> -->
-        <ion-item class="input-item item-label-floating">
-          <ion-label position="floating">Title</ion-label>
-          <ion-input type="text" formControlName="title" clearInput required></ion-input>
-        </ion-item>
-        <div class="error-container">
-          <ng-container *ngFor="let validation of validations.title">
-            <div class="error-message" *ngIf="validationsForm.get('title').hasError(validation.type) && (validationsForm.get('title').dirty || validationsForm.get('title').touched)">
-              <ion-icon name="information-circle-outline"></ion-icon>
-              <span>{{ validation.message }}</span>
-            </div>
+        <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
+          <ng-container *ngFor="let item of itemsOrder" >
+            <ion-item  class="input-item item-label-floating">
+              <ng-container [ngSwitch]="item.type">
+                <ion-label position="floating">{{item.title}}</ion-label>
+                <ion-input *ngIf="item.type=='text'" type="text" [formControlName]="item.name" clearInput required></ion-input>
+                <ion-textarea *ngIf="item.type=='textarea'" rows="2"  type="text" [formControlName]="item.name" clearInput></ion-textarea>
+                  <ng-container *ngSwitchCase="'category'" >
+                    <ion-select [formControlName]="item.name" cancelText="Cancel" okText="OK">
+                      <ion-select-option *ngFor="let category of categoriesList" [value]="category.id" >{{ category.title }}</ion-select-option>
+                     </ion-select>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'tags'" >
+                    <ion-input type="text" clearInput (keyup.enter)="addTags($event)"></ion-input>
+                    <ion-row *ngIf="tags.length>0" class="item-tags">
+                     <ion-col class="tag-wrapper" *ngFor="let tag of tags">
+                       <span class="item-tag">
+                         <app-text-shell [data]="tag"></app-text-shell>
+                       </span>
+                     </ion-col>
+                   </ion-row>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'img'">
+                    <ion-row class="pictures-row">
+                      <!-- <ion-col class="picture-wrapper"> -->
+                        <img [src]="item.value" [alt]="'image'" />
+                        <!-- <app-aspect-ratio [ratio]="{w: 1, h: 1}">
+                          <app-image-shell class="picture-image" [src]="validationsForm.controls[item.name].value" [alt]="'image'"></app-image-shell>
+                        </app-aspect-ratio> -->
+                      <!-- </ion-col> -->
+                    </ion-row>
+                  </ng-container>
+                  <div class="error-container">
+                    <ng-container *ngFor="let validation of validations[item.name]">
+                      <div class="error-message" *ngIf="validationsForm.get(item.name).hasError(validation.type) && (validationsForm.get(item.name).dirty || validationsForm.get(item.name).touched)">
+                        <ion-icon name="information-circle-outline"></ion-icon>
+                        <span>{{ validation.message }}</span>
+                      </div>
+                    </ng-container>
+                  </div>
+              </ng-container>
+               <ion-reorder slot="end"></ion-reorder>
+              
+            </ion-item>
           </ng-container>
-        </div>
-        <ion-item class="input-item item-label-floating">
-          <ion-label position="floating">Description</ion-label>
-          <ion-textarea  rows="2"  type="text" formControlName="description" clearInput></ion-textarea>
-        </ion-item>
-        <div class="error-container">
-          <ng-container *ngFor="let validation of validations.description">
-            <div class="error-message" *ngIf="validationsForm.get('description').hasError(validation.type) && (validationsForm.get('description').dirty || validationsForm.get('description').touched)">
-              <ion-icon name="information-circle-outline"></ion-icon>
-              <span>{{ validation.message }}</span>
+         
+          <ion-row>
+            <ion-col col-4> 
+              <ion-tab-button (click)="addField('text')" >
+                <ion-icon name="add-circle"></ion-icon>
+                <ion-label class="tab-title">Text</ion-label>
+              </ion-tab-button>
+            </ion-col>
+            <ion-col col-4 class="choose-image">
+              <ion-tab-button (click)="btnchoseImage.click()" >
+                <ion-icon name="add-circle"></ion-icon>
+                <ion-label class="tab-title">Image</ion-label>
+              </ion-tab-button>
+              <input type="file" #btnchoseImage (change)="choseImage($event.target.files)" />
+            </ion-col>
+            <ion-col col-4>
+              <ion-tab-button (click)="addField('youtube')" >
+                <ion-icon name="add-circle"></ion-icon>
+                <ion-label class="tab-title">Youtube Video</ion-label>
+              </ion-tab-button>
+            </ion-col>
+
+            <!-- <ion-item class="radio-tag" lines="none">
+              <ion-button class="submit-btn" type="button" expand="block" fill="solid">Add Text</ion-button>
+            </ion-item>
+            <ion-item class="radio-tag" lines="none">
+              <ion-button class="submit-btn" type="button" expand="block" fill="solid">Add Image</ion-button>
+            </ion-item>
+            <ion-item class="radio-tag" lines="none">
+              <ion-button class="submit-btn" type="button" expand="block" fill="solid">Add YoutTube Link</ion-button>
+            </ion-item> -->
+          </ion-row>
+          <!-- <ion-item class="input-item item-label-floating">
+            <ion-label position="floating">Title</ion-label>
+            <ion-input type="text" formControlName="title" clearInput required></ion-input>
+            <ion-reorder slot="end"></ion-reorder>
+            <div class="error-container">
+              <ng-container *ngFor="let validation of validations.title">
+                <div class="error-message" *ngIf="validationsForm.get('title').hasError(validation.type) && (validationsForm.get('title').dirty || validationsForm.get('title').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon>
+                  <span>{{ validation.message }}</span>
+                </div>
+              </ng-container>
             </div>
-          </ng-container>
-        </div>
-
-        <ion-item class="input-item item-label-floating">
-          <ion-label position="floating">Category</ion-label>
-          <ion-select formControlName="category_id" cancelText="Cancel" okText="OK">
-            <ion-select-option *ngFor="let category of categoriesList" [value]="category.id" >{{ category.title }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-        <div class="error-container">
-          <ng-container *ngFor="let validation of validations.category_id">
-            <div class="error-message" *ngIf="validationsForm.get('category_id').hasError(validation.type) && (validationsForm.get('category_id').dirty || validationsForm.get('category_id').touched)">
-              <ion-icon name="information-circle-outline"></ion-icon>
-              <span>{{ validation.message }}</span>
+          </ion-item> -->
+         
+          <!-- <ion-item class="input-item item-label-floating">
+            <ion-label position="floating">Description</ion-label>
+            <ion-textarea  rows="2"  type="text" formControlName="description" clearInput></ion-textarea>
+            <ion-reorder slot="end"></ion-reorder>
+            <div class="error-container">
+              <ng-container *ngFor="let validation of validations.description">
+                <div class="error-message" *ngIf="validationsForm.get('description').hasError(validation.type) && (validationsForm.get('description').dirty || validationsForm.get('description').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon>
+                  <span>{{ validation.message }}</span>
+                </div>
+              </ng-container>
             </div>
-          </ng-container>
-        </div>
-
-        <ion-item class="input-item item-label-floating">
-          <ion-label position="floating">Tags</ion-label>
-          <ion-input type="text"  clearInput (keyup.enter)="addTags($event)"></ion-input>
-        </ion-item>
-  
-        <ion-row *ngIf="tags.length>0" class="item-tags">
-          <ion-col class="tag-wrapper" *ngFor="let tag of tags">
-            <span class="item-tag">
-              <app-text-shell [data]="tag"></app-text-shell>
-            </span>
-          </ion-col>
-        </ion-row>
-
+          </ion-item> -->
+          
+          <!-- <ion-item class="input-item item-label-floating">
+            <ion-label position="floating">Category</ion-label>
+            <ion-select formControlName="category_id" cancelText="Cancel" okText="OK">
+              <ion-select-option *ngFor="let category of categoriesList" [value]="category.id" >{{ category.title }}</ion-select-option>
+            </ion-select>
+            <ion-reorder slot="end"></ion-reorder>
+            <div class="error-container">
+              <ng-container *ngFor="let validation of validations.category_id">
+                <div class="error-message" *ngIf="validationsForm.get('category_id').hasError(validation.type) && (validationsForm.get('category_id').dirty || validationsForm.get('category_id').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon>
+                  <span>{{ validation.message }}</span>
+                </div>
+              </ng-container>
+            </div>
+          </ion-item> -->
+        
+          <!-- <ion-item class="input-item item-label-floating">
+            <ion-label position="floating">Tags</ion-label>
+            <ion-input type="text"  clearInput (keyup.enter)="addTags($event)"></ion-input>
+            <ion-reorder slot="end"></ion-reorder>
+            <ion-row *ngIf="tags.length>0" class="item-tags">
+              <ion-col class="tag-wrapper" *ngFor="let tag of tags">
+                <span class="item-tag">
+                  <app-text-shell [data]="tag"></app-text-shell>
+                </span>
+              </ion-col>
+            </ion-row>
+          </ion-item> -->
+        </ion-reorder-group>
       </ion-list>
   
       <div class="cover-wrapper">

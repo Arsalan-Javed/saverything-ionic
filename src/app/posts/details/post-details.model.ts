@@ -9,7 +9,8 @@ export class PostDetailsModel extends ShellModel {
   description:string;
   title:string;
   additional_pictures : Array<string> = [];
-  
+  order: Array<string> = [];
+  additional_data: Array<any> = [];
   // icon: string;
   // slug: string;
   // showcaseImage: string;

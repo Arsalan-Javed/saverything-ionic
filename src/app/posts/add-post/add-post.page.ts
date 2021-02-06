@@ -1,12 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { CategoriesModel } from '../../categories/categories.model';
 import { IResolvedRouteData, ResolverHelper } from  '../../utils/resolver-helper';
 import { PostService } from "../post.service";
-
+import { ItemReorderEventDetail } from '@ionic/core';
+import { AlertController } from "@ionic/angular";
 export interface imgFile {
   name: string;
   filepath: string;
@@ -27,6 +28,7 @@ export class AddPostPage implements OnInit {
     back="app/categories";
     tags = [];
     categoriesList: any;
+    action="";
     title_image :any =
     {
       result:'./assets/sample-images/food/la-olla.jpg',
@@ -38,8 +40,39 @@ export class AddPostPage implements OnInit {
     category_id = "";
     post_id="";
     additional_pictures: any = [];
+    other_pictures: any = [];
     subscriptions: Subscription;
-    
+    DefaultFields =['title','description','category_id','tags'];
+    itemsOrder = [
+      {
+        name:'title',
+        title:'Title',
+        type:'text',
+        value:null,
+        is_existing:true,
+      },
+      {
+        name:'description',
+        title:'Description',
+        type:'textarea',
+        value:null,
+        is_existing:true,
+      },
+      {
+        name:'category_id',
+        title:'Category',
+        type:'category',
+        value:null,
+        is_existing:true,
+      },
+      {
+        name:'tags',
+        title:'Tags',
+        type:'tags',
+        value:null,
+        is_existing:true,
+      },
+    ];
     validations = {
         'title': [
           { type: 'required', message: 'Title is required.' },
@@ -54,7 +87,11 @@ export class AddPostPage implements OnInit {
         ]
       };
 
-    constructor(private route: ActivatedRoute,private postService: PostService,private router: Router) { }
+    constructor(private route: ActivatedRoute,
+      private postService: PostService,
+      private router: Router,
+      private fb : FormBuilder,
+      public alertController: AlertController) { }
 
     ngOnInit(): void {
 
@@ -75,6 +112,7 @@ export class AddPostPage implements OnInit {
       this.category_id = this.route.snapshot.paramMap.get('category_id');
       this.post_id = this.route.snapshot.paramMap.get('post_id'); // Edit Flow
 
+     
       this.validationsForm = new FormGroup({
         title: new FormControl('', Validators.compose([
           Validators.maxLength(20),
@@ -83,7 +121,9 @@ export class AddPostPage implements OnInit {
         ])),
         description: new FormControl('', Validators.required),
         category_id: new FormControl('', Validators.required),
+        tags: new FormControl('')
       });
+
 
       if(this.post_id)
       {
@@ -102,17 +142,35 @@ export class AddPostPage implements OnInit {
             this.additional_pictures.push({result:element,file:null,is_existing:true});
           });
           this.tags  = state.tags;
+          // reOrder this elements
+          this.reOrder(state.order);
 
         }, (error) => console.log(error));
       }
-      else if(this.category_id)
+      
+      if(this.category_id)
       {
         this.back = "app/categories/posts/"+this.category_id;
         this.validationsForm.get('category_id').setValue(this.category_id);
       }
-           
+    }
 
+    reOrder(order)
+    {
       
+      this.itemsOrder = order;
+      this.itemsOrder.forEach(element => {
+        element.is_existing=true;
+      });
+      var controls = this.validationsForm.controls;
+      order.forEach(element => {
+        var control = controls[element.name];
+        if(control)
+          this.validationsForm.addControl(element.name,control);
+        else
+          this.validationsForm.addControl(element.name,new FormControl(element.value));
+        
+      });
     }
 
     onSubmit() {
@@ -129,9 +187,13 @@ export class AddPostPage implements OnInit {
         post.tags = this.tags;
         post.title_picture = this.title_image.file ? {file:this.title_image.file} : "";
         post.additional_pictures = this.additional_pictures;
+        post.order = this.itemsOrder;
         this.postService.savePost(post).then(res=>{
           if(res.status){
-            this.router.navigate(['app/categories/posts/'+this.category_id], { replaceUrl: true});
+            if(!this.category_id)
+               this.router.navigate(['app/categories/posts/'+values.category_id], { replaceUrl: true});
+            else
+               this.router.navigate(['app/categories/posts/'+this.category_id], { replaceUrl: true});
           }
         })
       }
@@ -149,6 +211,28 @@ export class AddPostPage implements OnInit {
 
       return is_valid;
     }
+
+    // getAdditionalData(){
+    //   var additional_data =[];
+    //   this.itemsOrder.forEach(element => {
+    //     if(this.DefaultFields.indexOf(element.name)<0){
+    //       var add = {
+    //         name:element.name,
+    //         title:element.title,
+    //         type:element.type,
+    //         value: element['value'],
+    //         is_existing:element.is_existing
+    //       }
+    //       if(add.type=='img'){
+    //         add['file'] = element['file'];
+    //       }
+             
+    //       delete element['file'];
+    //       additional_data.push(add);
+    //     }
+    //   });
+    //   return additional_data;
+    // }
 
     uploadAdditionalImage(event: FileList){
 
@@ -210,5 +294,116 @@ export class AddPostPage implements OnInit {
     event.target.value="";
   }
 
+  doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
+    // The `from` and `to` properties contain the index of the item
+    console.log('Dragged from index', ev.detail.from, 'to', ev.detail.to);
+
+    let draggedItem = this.itemsOrder.splice(ev.detail.from,1)[0];
+    this.itemsOrder.splice(ev.detail.to,0,draggedItem)
+
+    // Finish the reorder and position the item in the DOM based on
+    // where the gesture ended. This method can also be called directly
+    // by the reorder group
+    ev.detail.complete();
+  }
+
+  addControl(value){
+
+    if(this.action=='text'){
+      var name = 'text_'+ Math.floor((Math.random() * 20) - 1);
+      this.validationsForm.addControl(name,new FormControl(value));
+      this.itemsOrder.push({
+        name:name,
+        title:'',
+        type:'text',
+        value:value,
+        is_existing:false,
+      });
+    }
+    else{
+      if(value.indexOf('youtube')>=0){
+        var name = 'url_'+ Math.floor((Math.random() * 20) - 1);
+        this.validationsForm.addControl(name,new FormControl(value));
+        this.itemsOrder.push({
+          name:name,
+          title:'',
+          type:'url',
+          value:value,
+          is_existing:false,
+        });
+      }
+      
+    }
+    
+    
+  }
+
+  addField(type)
+  {
+    this.action = type;
+    this.presentAlertPrompt();
+  }
+
+  choseImage(event: FileList) {
+      
+    const file = event.item(0);
+
+    // Image validation
+    if (file.type.split('/')[0] !== 'image') { 
+      console.log('File type is not supported!');
+      return;
+    }
+
+    var name = 'img_'+ Math.floor((Math.random() * 20) + 1);
+    var reader = new FileReader();
+    reader.readAsDataURL(file); 
+    reader.onload = (_event) => { 
+      this.validationsForm.addControl(name,new FormControl(reader.result));
+      var obj = {name:name,title:'',type:'img',value:reader.result,file:file,is_existing:false}
+      this.itemsOrder.push(obj); 
+    }
+  }
+
+
+  async presentAlertPrompt() {
+
+    var inputs =  [];
+    if(this.action=='text')
+    {
+      inputs.push({name: 'input_field',
+      type: 'text',
+      placeholder: 'Enter some thing'
+     });
+    }
+    else{
+      inputs.push({name: 'input_field',
+       type: 'url',
+       placeholder: 'Enter Youtube URL'
+      });
+    }
+
+    const alert = await this.alertController.create({
+     // cssClass: 'forms-validations-content',
+      // header: 'Text',
+      inputs: inputs,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'OK',
+          handler: (event) => {
+            this.addControl(event['input_field']);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
     
 }

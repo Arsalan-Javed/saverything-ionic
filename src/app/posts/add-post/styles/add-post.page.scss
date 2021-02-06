@@ -121,6 +121,12 @@ ion-content {
   }
 }
 
+.choose-image{
+  input[type=file]{
+    display: none;
+  }
+}
+
   .cover-wrapper {
      margin: var(--page-margin);
 
@@ -221,7 +227,6 @@ ion-content {
       background-color: white;
     }
   }
-
 
   
 
