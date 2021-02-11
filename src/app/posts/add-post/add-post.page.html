@@ -10,11 +10,10 @@
 <ion-content class="forms-validations-content">
     <form class="validations-form" [formGroup]="validationsForm">
       <ion-list class="inputs-list" lines="full">
-        <!-- <ion-list-header>
-          <ion-label class="header-title">Basic Validations</ion-label>
-        </ion-list-header> -->
+
         <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
           <ng-container *ngFor="let item of itemsOrder" >
+            <ion-item-sliding>
             <ion-item  class="input-item item-label-floating">
               <ng-container [ngSwitch]="item.type">
                 <ion-label position="floating">{{item.title}}</ion-label>
@@ -37,13 +36,11 @@
                   </ng-container>
                   <ng-container *ngSwitchCase="'img'">
                     <ion-row class="pictures-row">
-                      <!-- <ion-col class="picture-wrapper"> -->
                         <img [src]="item.value" [alt]="'image'" />
-                        <!-- <app-aspect-ratio [ratio]="{w: 1, h: 1}">
-                          <app-image-shell class="picture-image" [src]="validationsForm.controls[item.name].value" [alt]="'image'"></app-image-shell>
-                        </app-aspect-ratio> -->
-                      <!-- </ion-col> -->
                     </ion-row>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'url'">
+                      <iframe  [src]="sanitizer(item.value)" frameborder="0" autoplay ></iframe>
                   </ng-container>
                   <div class="error-container">
                     <ng-container *ngFor="let validation of validations[item.name]">
@@ -57,6 +54,11 @@
                <ion-reorder slot="end"></ion-reorder>
               
             </ion-item>
+            <ion-item-options side="end">
+              <ion-item-option (click)="optionAdd(item.name)" *ngIf="AddFields.indexOf(item.name)>=0" >Add</ion-item-option>
+              <ion-item-option (click)="optionRemove(item)" *ngIf="DefaultFields.indexOf(item.name)<0" color="danger">Remove</ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
           </ng-container>
          
           <ion-row>

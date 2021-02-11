@@ -14,6 +14,7 @@ export class PostService {
 
   // Collection Names
   private readonly POSTS = 'Posts';
+  private readonly CATEGORIES = 'Categories';
 
   private listingDataStore: DataStore<PostListingModel>;
   private detailsDataStore: DataStore<PostDetailsModel>;
@@ -265,6 +266,20 @@ export class PostService {
         
       });
       
+    });
+    
+  }
+
+  addCategory(category){
+    var $this = this;
+    return new Promise<any>((resolve, reject) => {
+
+      $this.afs.collection($this.CATEGORIES).add(category).then(function (docRef) {
+
+        resolve({status:true, message:'Saved Successfully',category_id:docRef.id});
+
+      }).catch(function (error) { resolve({status:false, message:error});});
+
     });
     
   }

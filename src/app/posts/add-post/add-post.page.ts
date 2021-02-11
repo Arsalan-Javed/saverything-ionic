@@ -8,6 +8,7 @@ import { IResolvedRouteData, ResolverHelper } from  '../../utils/resolver-helper
 import { PostService } from "../post.service";
 import { ItemReorderEventDetail } from '@ionic/core';
 import { AlertController } from "@ionic/angular";
+import { DomSanitizer } from "@angular/platform-browser";
 export interface imgFile {
   name: string;
   filepath: string;
@@ -24,6 +25,7 @@ export interface imgFile {
   })
 export class AddPostPage implements OnInit {
 
+    video_url = "https://www.youtube.com/embed/3gAssJ5cXi8";
     button_title = "Post";
     back="app/categories";
     tags = [];
@@ -43,6 +45,8 @@ export class AddPostPage implements OnInit {
     other_pictures: any = [];
     subscriptions: Subscription;
     DefaultFields =['title','description','category_id','tags'];
+    AddFields = ['category_id'];
+    Sizes = ['small','medium','large'];
     itemsOrder = [
       {
         name:'title',
@@ -85,14 +89,19 @@ export class AddPostPage implements OnInit {
         'category_id': [
           { type: 'required', message: 'Category is required.' }
         ]
-      };
+    };
 
     constructor(private route: ActivatedRoute,
       private postService: PostService,
       private router: Router,
       private fb : FormBuilder,
-      public alertController: AlertController) { }
+      public alertController: AlertController,
+      private dom : DomSanitizer
+      ) { }
 
+    sanitizer(video){
+         return this.dom.bypassSecurityTrustResourceUrl(video);
+    }
     ngOnInit(): void {
 
       this.subscriptions = this.route.data
@@ -404,6 +413,87 @@ export class AddPostPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async addCategoryPrompt() {
+
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Add Category',
+      inputs: [
+        {
+          name: 'input_category',
+          label:'Category Name',
+          type: 'text',
+          placeholder: 'Enter category name'
+        },{
+          name: 'input_size',
+          label:'Category Size',
+          type: 'text',
+          placeholder: 'small,medium or large'
+        },],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Add',
+          handler: (event) => {
+
+            this.addCategory({
+              name: event['input_category'],
+              size: event['input_size']
+            });
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  addCategory(cat){
+
+    if(!cat.name)
+        return;
+
+      var category = {
+        name:cat.name.replaceAll(' ','-'),
+        order: this.categoriesList.length+1,
+        size: cat.size && this.Sizes.indexOf(cat.size.toLowerCase())>=0 ? cat.size.toLowerCase() : 'small',
+        title:cat.name
+      }
+
+      var $this = this;
+      this.postService.addCategory(category).then(function(res){
+          if(res.status){
+            category['id']= res.category_id;
+            $this.categoriesList.push(category);
+          }
+      });
+  }
+
+  optionAdd(name){
+
+    if(name=="category_id")
+    {
+      this.addCategoryPrompt();
+    }
+
+  }
+
+  optionRemove(item){
+    if(item.type=='img'){
+      //Remove Image First from Storage
+    }
+    else{
+      this.validationsForm.removeControl(item.name);
+      this.itemsOrder = this.itemsOrder.filter(p=>p.name!=item.name);
+    }
   }
     
 }
