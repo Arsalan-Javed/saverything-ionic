@@ -6,6 +6,7 @@ import { IResolvedRouteData, ResolverHelper } from '../../utils/resolver-helper'
 import { PostDetailsModel } from './post-details.model';
 import { switchMap } from 'rxjs/operators';
 import { PostService } from '../post.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-post-details',
@@ -27,7 +28,8 @@ export class PostDetailsPage implements OnInit {
   }
 
   
-  constructor(private route: ActivatedRoute,private router: Router,private postService: PostService) { }
+  constructor(private route: ActivatedRoute,private router: Router,
+    private postService: PostService,private dom : DomSanitizer) { }
 
   ngOnInit(): void {
     this.subscriptions = this.route.data
@@ -60,5 +62,9 @@ export class PostDetailsPage implements OnInit {
        if(res.status)
           this.router.navigate([this.back], { replaceUrl: true});
      })
+  }
+
+  sanitizer(video){
+    return this.dom.bypassSecurityTrustResourceUrl(video);
   }
 }

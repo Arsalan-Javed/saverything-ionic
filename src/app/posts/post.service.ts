@@ -283,5 +283,10 @@ export class PostService {
     });
     
   }
+
+  removeImage(url){
+    if(url)
+      this.afStorage.storage.refFromURL(url).delete();
+  }
   
 }

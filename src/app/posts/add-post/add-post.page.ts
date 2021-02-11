@@ -99,9 +99,6 @@ export class AddPostPage implements OnInit {
       private dom : DomSanitizer
       ) { }
 
-    sanitizer(video){
-         return this.dom.bypassSecurityTrustResourceUrl(video);
-    }
     ngOnInit(): void {
 
       this.subscriptions = this.route.data
@@ -196,6 +193,7 @@ export class AddPostPage implements OnInit {
         post.tags = this.tags;
         post.title_picture = this.title_image.file ? {file:this.title_image.file} : "";
         post.additional_pictures = this.additional_pictures;
+        this.prepareValues();
         post.order = this.itemsOrder;
         this.postService.savePost(post).then(res=>{
           if(res.status){
@@ -206,6 +204,16 @@ export class AddPostPage implements OnInit {
           }
         })
       }
+    }
+
+    prepareValues(){
+
+      this.itemsOrder.forEach(element => {
+        if(this.DefaultFields.indexOf(element.name)<0)
+        {
+          element.value = this.validationsForm.controls[element.name].value;
+        }
+      });
     }
 
     validate(){
@@ -318,32 +326,33 @@ export class AddPostPage implements OnInit {
 
   addControl(value){
 
-    if(this.action=='text'){
-      var name = 'text_'+ Math.floor((Math.random() * 20) - 1);
-      this.validationsForm.addControl(name,new FormControl(value));
-      this.itemsOrder.push({
-        name:name,
-        title:'',
-        type:'text',
-        value:value,
-        is_existing:false,
-      });
-    }
-    else{
-      if(value.indexOf('youtube')>=0){
-        var name = 'url_'+ Math.floor((Math.random() * 20) - 1);
+    if(value){
+      if(this.action=='text'){
+        var name = 'text_'+ Math.floor((Math.random() * 20) - 1);
         this.validationsForm.addControl(name,new FormControl(value));
         this.itemsOrder.push({
           name:name,
           title:'',
-          type:'url',
+          type:'text',
           value:value,
           is_existing:false,
         });
       }
-      
+      else{
+        if(value.indexOf('youtube')>=0){
+          var name = 'url_'+ Math.floor((Math.random() * 20) - 1);
+          this.validationsForm.addControl(name,new FormControl(value));
+          this.itemsOrder.push({
+            name:name,
+            title:'',
+            type:'url',
+            value:value,
+            is_existing:false,
+          });
+        }
+        
+      }
     }
-    
     
   }
 
@@ -489,6 +498,10 @@ export class AddPostPage implements OnInit {
   optionRemove(item){
     if(item.type=='img'){
       //Remove Image First from Storage
+
+      this.postService.removeImage(item.value);
+      this.validationsForm.removeControl(item.name);
+      this.itemsOrder = this.itemsOrder.filter(p=>p.name!=item.name);
     }
     else{
       this.validationsForm.removeControl(item.name);
@@ -496,4 +509,8 @@ export class AddPostPage implements OnInit {
     }
   }
     
+  sanitizer(video){
+    return this.dom.bypassSecurityTrustResourceUrl(video);
+  }
+
 }
