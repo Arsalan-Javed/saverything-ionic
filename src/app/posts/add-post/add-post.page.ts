@@ -327,11 +327,21 @@ export class AddPostPage implements OnInit {
     ev.detail.complete();
   }
 
+  getUniqName(inital)
+  {
+    var number_= Math.floor((Math.random() * 100) - 1);
+    var name = inital + number_;
+    if(this.itemsOrder.filter(p=>p.name==name).length>0)
+       return this.getUniqName(inital);
+    else
+       return name;
+  }
+
   addControl(value){
 
     if(value){
       if(this.action=='text'){
-        var name = 'text_'+ Math.floor((Math.random() * 20) - 1);
+        var name = this.getUniqName('text_');
         this.validationsForm.addControl(name,new FormControl(value));
         this.itemsOrder.push({
           name:name,
@@ -343,7 +353,7 @@ export class AddPostPage implements OnInit {
       }
       else{
         var url_ = 'https://www.youtube.com/embed/'+value;
-        var name = 'url_'+ Math.floor((Math.random() * 20) - 1);
+        var name = this.getUniqName('url_');
         this.validationsForm.addControl(name,new FormControl(url_));
         this.itemsOrder.push({
           name:name,
@@ -373,7 +383,7 @@ export class AddPostPage implements OnInit {
       return;
     }
 
-    var name = 'img_'+ Math.floor((Math.random() * 20) + 1);
+    var name = this.getUniqName('img_');
     var reader = new FileReader();
     reader.readAsDataURL(file); 
     reader.onload = (_event) => { 
