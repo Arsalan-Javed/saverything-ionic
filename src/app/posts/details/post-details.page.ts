@@ -67,4 +67,9 @@ export class PostDetailsPage implements OnInit {
   sanitizer(video){
     return this.dom.bypassSecurityTrustResourceUrl(video);
   }
+
+  onBack()
+  {
+    this.router.navigate([this.back], {  replaceUrl: true});
+  }
 }

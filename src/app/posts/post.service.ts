@@ -52,7 +52,7 @@ export class PostService {
 
   public getListingStore(dataSource: Observable<PostListingModel>): DataStore<PostListingModel> {
     // Use cache if available
-    if (!this.listingDataStore) {
+    //if (!this.listingDataStore) {
       // Initialize the model specifying that it is a shell model
       const shellModel: PostListingModel = new PostListingModel();
       this.listingDataStore = new DataStore(shellModel);
@@ -66,7 +66,7 @@ export class PostService {
         // Trigger the loading mechanism (with shell)
         this.listingDataStore.load(dataSource);
       }
-    }
+    //}
     return this.listingDataStore;
   }
 

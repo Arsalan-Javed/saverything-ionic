@@ -67,7 +67,7 @@ export class CategoryService {
 
   public getListingStore(dataSource: Observable<CategoriesModel>): DataStore<CategoriesModel> {
     // Use cache if available
-    if (!this.listingDataStore) {
+    //if (!this.listingDataStore) {
       // Initialize the model specifying that it is a shell model
       const shellModel: CategoriesModel = new CategoriesModel();
       this.listingDataStore = new DataStore(shellModel);
@@ -81,7 +81,7 @@ export class CategoryService {
         // Trigger the loading mechanism (with shell)
         this.listingDataStore.load(dataSource);
       }
-    }
+    //}
     return this.listingDataStore;
   }
 

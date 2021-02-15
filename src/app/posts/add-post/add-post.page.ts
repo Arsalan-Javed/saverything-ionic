@@ -27,7 +27,7 @@ export class AddPostPage implements OnInit {
 
     video_url = "https://www.youtube.com/embed/3gAssJ5cXi8";
     button_title = "Post";
-    back="app/categories";
+    back="";
     tags = [];
     categoriesList: any;
     action="";
@@ -153,8 +153,7 @@ export class AddPostPage implements OnInit {
 
         }, (error) => console.log(error));
       }
-      
-      if(this.category_id)
+      else if(this.category_id)
       {
         this.back = "app/categories/posts/"+this.category_id;
         this.validationsForm.get('category_id').setValue(this.category_id);
@@ -197,10 +196,14 @@ export class AddPostPage implements OnInit {
         post.order = this.itemsOrder;
         this.postService.savePost(post).then(res=>{
           if(res.status){
-            if(!this.category_id)
-               this.router.navigate(['app/categories/posts/'+values.category_id], { replaceUrl: true});
-            else
-               this.router.navigate(['app/categories/posts/'+this.category_id], { replaceUrl: true});
+            if(!this.back)
+            {
+              if(!this.category_id)
+                this.back = 'app/categories/posts/'+values.category_id;
+             else
+                this.back ='app/categories/posts/'+this.category_id;
+            }
+            this.onBack();
           }
         })
       }
@@ -339,18 +342,16 @@ export class AddPostPage implements OnInit {
         });
       }
       else{
-        if(value.indexOf('youtube')>=0){
-          var name = 'url_'+ Math.floor((Math.random() * 20) - 1);
-          this.validationsForm.addControl(name,new FormControl(value));
-          this.itemsOrder.push({
-            name:name,
-            title:'',
-            type:'url',
-            value:value,
-            is_existing:false,
-          });
-        }
-        
+        var url_ = 'https://www.youtube.com/embed/'+value;
+        var name = 'url_'+ Math.floor((Math.random() * 20) - 1);
+        this.validationsForm.addControl(name,new FormControl(url_));
+        this.itemsOrder.push({
+          name:name,
+          title:'',
+          type:'url',
+          value:url_,
+          is_existing:false,
+        });
       }
     }
     
@@ -396,7 +397,7 @@ export class AddPostPage implements OnInit {
     else{
       inputs.push({name: 'input_field',
        type: 'url',
-       placeholder: 'Enter Youtube URL'
+       placeholder: 'Enter Youtube Video Id'
       });
     }
 
@@ -512,5 +513,10 @@ export class AddPostPage implements OnInit {
   sanitizer(video){
     return this.dom.bypassSecurityTrustResourceUrl(video);
   }
-
+  
+  
+  onBack()
+  {
+    this.router.navigate([this.back], {  replaceUrl: true});
+  }
 }
