@@ -351,6 +351,17 @@ export class AddPostPage implements OnInit {
           is_existing:false,
         });
       }
+      else if(this.action=='text-area'){
+        var name = this.getUniqName('text_area_');
+        this.validationsForm.addControl(name,new FormControl(value));
+        this.itemsOrder.push({
+          name:name,
+          title:'',
+          type:'textarea',
+          value:value,
+          is_existing:false,
+        });
+      }
       else{
         var url_ = 'https://www.youtube.com/embed/'+value;
         var name = this.getUniqName('url_');
@@ -402,6 +413,13 @@ export class AddPostPage implements OnInit {
       inputs.push({name: 'input_field',
       type: 'text',
       placeholder: 'Enter some thing'
+     });
+    }
+    else if(this.action=='text-area')
+    {
+      inputs.push({name: 'input_field',
+      type: 'textarea',
+      placeholder: 'Enter description'
      });
     }
     else{
