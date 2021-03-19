@@ -9,6 +9,7 @@
 
   --page-category-background: var(--ion-color-medium);
   --page-category-background-rgb: var(--ion-color-medium-rgb);
+  --page-background: transparent;
 }
 
 // Note:  All the CSS variables defined below are overrides of Ionic elements CSS Custom Properties
@@ -68,4 +69,8 @@
     --page-category-background: #d9453a;
     --page-category-background-rgb: 217,69,58;
   }
+}
+
+app-categories #background-content{
+  background: var(--page-background) !important;
 }

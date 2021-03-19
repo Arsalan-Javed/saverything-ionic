@@ -4,7 +4,7 @@
 // Note:  These ones were added by us and have nothing to do with Ionic CSS Custom Properties
 :host {
   --page-margin: var(--app-fair-margin);
-  --page-background: var(--app-background-shade);
+  --page-background: transparent;
   --page-tags-gutter: 4px;
   --page-pictures-gutter: calc(var(--page-margin) / 4);
 }
@@ -12,7 +12,7 @@
 // Use a colored border-top to fix weird transitions between toolbars that have different background colors
 ion-header {
   ion-toolbar {
-    --background: transparent;
+    --background: --page-background;
   }
 }
 ion-content {
@@ -21,11 +21,18 @@ ion-content {
   border-top: calc(var(--app-header-height) + var(--ion-safe-area-top));
   border-top-style: solid;
   border-top-color: var(--ion-color-primary);
+  color : white;
 }
   
   // Note:  All the CSS variables defined below are overrides of Ionic elements CSS Custom Properties
 .forms-validations-content {
   --background: var(--page-background);
+  color: white;
+
+  ion-input, ion-icon, ion-label, ion-textarea, ion-select, ion-reorder{
+    color: white;
+  }
+
 
   .validations-form {
     margin-bottom: calc(var(--page-margin) * 2);
@@ -228,6 +235,9 @@ ion-content {
     }
   }
 
+  #background-content{
+    background: var(--page-background);
+  }
   
 
 

@@ -2,4 +2,11 @@
 ion-tab-button {
   --color: var(--ion-color-medium-shade);
   --color-selected: var(--ion-color-dark);
+  background: transparent;
+}
+ion-icon, ion-label{
+  color:white;
+}
+ion-tab-bar{
+  background: transparent;
 }
