@@ -71,6 +71,134 @@
   }
 }
 
-app-categories #background-content{
+ion-content::part(background)
+{
   background: var(--page-background) !important;
+}
+
+.scroll {
+  margin: 4px, 4px;
+  padding: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  background: transparent;
+  height: auto;
+}
+.item_{
+    background: #474d52;
+    color: white;
+    padding: 15px;
+    opacity: 0.50;
+    margin: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    min-height: 75px;
+    
+    max-width: 140px;
+}
+.ion_{
+  width: auto !important;
+  padding: 5px !important;
+  padding-right: 0px !important;
+  padding-bottom: 0px !important;
+  height: 82px !important;
+}
+.ion_ img{
+  width: 73px;
+}
+.reminder-row {
+  --ion-grid-columns: 10;
+  --ion-grid-column-padding: 0px;
+
+  margin: 0px calc(var(--page-users-pictures-gutter) * -1);
+  .item-wrapper {
+    --col-item-width: 2;
+    // SSR fix: Override ion-col styles
+    
+  }
+}
+.title_{
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.cat-item{
+  background: #474d52;
+  color: white;
+  padding: 15px;
+  opacity: 0.5;
+  margin: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  width: auto;
+  min-height: 48px;
+}
+.posts-row {
+  --ion-grid-columns: 10;
+  --ion-grid-column-padding: 0px;
+
+  margin: 0px calc(var(--page-users-pictures-gutter) * -1);
+  .item-wrapper {
+    --col-item-width: 2;
+    // SSR fix: Override ion-col styles
+    
+  }
+  .item_{
+    width: auto !important;
+  }
+}
+
+.posts-list {
+  --ion-grid-column-padding: var(--page-categories-gutter);
+
+  padding: calc(var(--page-categories-gutter) * 3);
+  height: 100%;
+  align-content: flex-start;
+  overflow: scroll;
+
+  .post_item{
+    background: #474d52;
+    color: white;
+    padding: 15px;
+    opacity: 0.50;
+    margin: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    width: 100%;
+    padding-right: 0px;
+    padding-top: 3px;
+    padding-left: 10px;
+    h2{
+      margin: 0px;
+    }
+    p{
+      margin: 0px;
+    }
+    .detail{
+      width: 82%;
+      float: left;
+     }
+     
+     .img{
+      // width: 20%;
+      float: left;
+      --col-item-width: 2;
+      // SSR fix: Override ion-col styles
+      flex: 0 0 calc(calc(var(--col-item-width) / var(--ion-grid-columns, 12)) * 100%);
+      width: calc(calc(var(--col-item-width) / var(--ion-grid-columns, 12)) * 100%);
+      max-width: calc(calc(var(--col-item-width) / var(--ion-grid-columns, 12)) * 100%);
+      padding: 0px var(--page-users-pictures-gutter);
+     }
+  }
+  .min{
+    min-height: 100px
+  }
+  .max{
+    min-height: 300 px
+  }
+  .dots{
+    text-align: right;
+    width: 98.7%;
+    height: 14px;
+  }
 }

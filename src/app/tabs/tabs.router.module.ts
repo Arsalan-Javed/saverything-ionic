@@ -154,6 +154,18 @@ const routes: Routes = [
         path: 'add-post',
         loadChildren: () => import('../posts/add-post/add-post.module').then(m => m.AddPostPageModule)
       },
+      {
+        path: 'check-list',
+        loadChildren: () => import('../check-list/check-list.module').then(m => m.CheckListModule)
+      },
+      {
+        path: 'reminder',
+        loadChildren: () => import('../reminder-list/reminder-list.module').then(m => m.ReminderListModule)
+      },
+      {
+        path: 'reminder/:doc_id',
+        loadChildren: () => import('../reminder-list/reminder-list.module').then(m => m.ReminderListModule)
+      },
     ]
   }
 ];

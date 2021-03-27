@@ -8,6 +8,9 @@ import { ComponentsModule } from '../components/components.module';
 import { CategoriesPage } from './categories.page';
 import { CategoryResolver } from './categories.resolver';
 import { CategoryService } from './category.service';
+import { ReminderListService } from '../reminder-list/reminder-list.service';
+import { CheckListService } from '../check-list/check-list.service';
+import { PipesModule } from '../pipes/pipes.module';
 
 const categoriesRoutes: Routes = [
   {
@@ -24,12 +27,15 @@ const categoriesRoutes: Routes = [
     IonicModule,
     CommonModule,
     RouterModule.forChild(categoriesRoutes),
-    ComponentsModule
+    ComponentsModule,
+    PipesModule
   ],
   declarations: [ CategoriesPage ],
   providers: [
     CategoryResolver,
-    CategoryService
+    CategoryService,
+    CheckListService,
+    ReminderListService
   ]
 })
 export class CategoriesPageModule {}

@@ -1,0 +1,39 @@
+<ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button [defaultHref]="back"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Set Reminder</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="forms-validations-content">
+    <form class="validations-form" [formGroup]="reminderlistForm">
+      <ion-list class="inputs-list" lines="full">
+               <ion-item  class="input-item item-label-floating">
+                 <ion-input type="text" placeholder="Enter here.." formControlName="title" clearInput required></ion-input>
+               </ion-item>
+               <div class="error-container">
+                   <div class="error-message" *ngIf="reminderlistForm.get('title').hasError('required') && (reminderlistForm.get('title').dirty || reminderlistForm.get('title').touched)">
+                     <ion-icon name="information-circle-outline"></ion-icon>
+                     <span>Title is required.</span>
+                   </div>
+               </div>
+
+               <ion-item  class="input-item item-label-floating">
+                <ion-datetime displayFormat="MM DD YY" formControlName="date" placeholder="Select Date"></ion-datetime>
+              </ion-item>
+              <div class="error-container">
+                  <div class="error-message" *ngIf="reminderlistForm.get('date').hasError('required') && (reminderlistForm.get('date').dirty || reminderlistForm.get('date').touched)">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    <span>Date is required.</span>
+                  </div>
+              </div>
+              <ion-item  class="input-item item-label-floating">
+                <ion-input type="text" placeholder="Enter here.." formControlName="text" clearInput></ion-input>
+              </ion-item>
+      </ion-list>
+      <ion-button class="submit-btn" type="button" (click)="onSubmit()" expand="block" fill="solid">Save</ion-button>
+      <ion-button class="submit-btn" type="button" *ngIf="doc_id" (click)="onRemove()" color="secondary" expand="block" fill="solid">Remove</ion-button>
+    </form>
+  </ion-content>

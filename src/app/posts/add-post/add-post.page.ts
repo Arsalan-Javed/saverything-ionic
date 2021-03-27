@@ -25,7 +25,6 @@ export interface imgFile {
   })
 export class AddPostPage implements OnInit {
 
-    video_url = "https://www.youtube.com/embed/3gAssJ5cXi8";
     button_title = "Post";
     back="";
     tags = [];

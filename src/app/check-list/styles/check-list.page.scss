@@ -1,0 +1,246 @@
+@import "theme/mixins/inputs/select-alert";
+
+// Custom variables
+// Note:  These ones were added by us and have nothing to do with Ionic CSS Custom Properties
+:host {
+  --page-margin: var(--app-fair-margin);
+  --page-background: transparent;
+  --page-tags-gutter: 4px;
+  --page-pictures-gutter: calc(var(--page-margin) / 4);
+}
+
+// Use a colored border-top to fix weird transitions between toolbars that have different background colors
+ion-header {
+  ion-toolbar {
+    --background: --page-background;
+  }
+}
+ion-content {
+  position: absolute;
+  top: 0;
+  border-top: calc(var(--app-header-height) + var(--ion-safe-area-top));
+  border-top-style: solid;
+  border-top-color: var(--ion-color-primary);
+  color : white;
+}
+  
+  // Note:  All the CSS variables defined below are overrides of Ionic elements CSS Custom Properties
+.forms-validations-content {
+  --background: var(--page-background);
+  color: white;
+
+  ion-input, ion-icon, ion-label, ion-textarea, ion-select, ion-reorder{
+    color: white;
+  }
+
+
+  .validations-form {
+    margin-bottom: calc(var(--page-margin) * 2);
+
+    .inputs-list {
+      --ion-item-background: var(--page-background);
+
+      padding: var(--page-margin) var(--page-margin) calc(var(--page-margin) * 2);
+
+      ion-list-header {
+        padding-inline-start: 0px;
+
+        .header-title {
+          text-transform: uppercase;
+      		font-size: 16px;
+      		color: var(--ion-color-secondary);
+        }
+      }
+
+      .input-item {
+        --padding-start: 0px;
+        --padding-end: 0px;
+        --inner-padding-end: 0px;
+      }
+
+      .terms-item {
+        --border-width: 0px;
+        --inner-padding-end: 0px;
+      }
+
+      .error-container {
+        .error-message {
+          margin: calc(var(--page-margin) / 2) 0px;
+          display: flex;
+          align-items: center;
+          color: var(--ion-color-danger);
+          font-size: 14px;
+
+          ion-icon {
+            padding-inline-end: calc(var(--page-margin) / 2);
+            flex-shrink: 0;
+          }
+        }
+    	}
+
+      .counter-item {
+        app-counter-input {
+          --counter-background: transparent;
+          --counter-color: var(--ion-color-primary);
+          --counter-border-color: var(--ion-color-primary);
+        }
+
+        .counter-value {
+          text-align: center;
+        }
+      }
+    }
+
+    .submit-btn {
+      margin: var(--page-margin);
+    }
+  }
+}
+
+
+.error-container {
+  .error-message {
+    margin: calc(var(--page-margin) / 2) 0px;
+    display: flex;
+    align-items: center;
+    color: var(--ion-color-danger);
+    font-size: 14px;
+
+    ion-icon {
+      padding-inline-end: calc(var(--page-margin) / 2);
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Alerts and in general all overlays are attached to the body or ion-app directly
+// We need to use ::ng-deep to access it from here
+::ng-deep .select-alert {
+  @include select-alert();
+
+  // Variables should be in a deeper selector or after the mixin include to override default values
+  --select-alert-color: var(--ion-color-lightest);
+  --select-alert-background: var(--ion-color-primary);
+  --select-alert-margin: 16px;
+
+  .alert-message {
+    display: none;
+  }
+}
+
+.choose-image{
+  input[type=file]{
+    display: none;
+  }
+}
+
+  .cover-wrapper {
+     margin: var(--page-margin);
+
+    .cover-anchor {
+      display: block;
+    }
+
+    .cover-icon-wrapper {
+      margin: 0px 20%;
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    input[type=file]{
+      display: none;
+    }
+  }
+
+  .pictures-row {
+    --ion-grid-columns: 10;
+    --ion-grid-column-padding: 0px;
+    margin: var(--page-margin);
+
+    .picture-wrapper {
+      --col-item-width: 2;
+      // SSR fix: Override ion-col styles
+      flex: 0 0 calc(calc(var(--col-item-width) / var(--ion-grid-columns, 12)) * 100%);
+      width: calc(calc(var(--col-item-width) / var(--ion-grid-columns, 12)) * 100%);
+      max-width: calc(calc(var(--col-item-width) / var(--ion-grid-columns, 12)) * 100%);
+
+      padding: 0px var(--page-pictures-gutter);
+
+      input[type=file]{
+        display: none;
+      }
+      
+      .has-more-pictures {
+				position: absolute;
+				top: 0px;
+				bottom: 0px;
+				left: 0px;
+				right: 0px;
+        // To compensate the .picture-wrapper padding
+        margin: 0px var(--page-pictures-gutter);
+				background-color: rgba(var(--page-color-rgb), .70);
+        border-radius: var(--app-narrow-radius);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+        text-decoration: none;
+        z-index: 2;
+
+				.pictures-count {
+					font-size: 22px;
+					color: var(--ion-color-lightest);
+					font-weight: 600;
+
+					&::before {
+						content: '+';
+						font-size: 26px;
+						color: var(--ion-color-lightest);
+						font-weight: 600;
+					}
+        }
+        
+        .pictures-add {
+					&::before {
+						font-size: 50px !important;
+					}
+        }
+        
+			}
+    }
+  }
+
+  .item-tags {
+    margin-top: 5px;
+
+    .tag-wrapper {
+      padding-right: var(--page-tags-gutter);
+      flex-grow: 0;
+      min-width: fit-content;
+
+      &:last-child {
+        padding-right: 0px;
+      }
+    }
+
+    .item-tag {
+      display: block;
+      border-radius: var(--app-narrow-radius);
+      border: 1px solid var(--ion-color-light-shade);
+      padding: calc(var(--page-tags-gutter) / 1) var(--page-tags-gutter);
+      font-size: 14px;
+      color: var(--ion-color-medium-tint);
+      background-color: white;
+    }
+  }
+
+  #background-content{
+    background: var(--page-background);
+  }
+  .chkbox{
+    padding-top: 24px;
+  }
+  
+
+

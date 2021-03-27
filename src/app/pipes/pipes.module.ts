@@ -5,6 +5,7 @@ import { NgFloorPipeModule } from 'angular-pipes';
 
 import { TimeDifferencePipe } from './time-difference.pipe';
 import { TimeAgoPipe } from './time-ago.pipe';
+import { DateFormatPipe } from './date-format.pipe';
 
 @NgModule({
   imports: [
@@ -14,12 +15,14 @@ import { TimeAgoPipe } from './time-ago.pipe';
   ],
   declarations: [
     TimeDifferencePipe,
-    TimeAgoPipe
+    TimeAgoPipe,
+    DateFormatPipe
   ],
   exports: [
     NgFloorPipeModule,
     TimeDifferencePipe,
-    TimeAgoPipe
+    TimeAgoPipe,
+    DateFormatPipe
   ]
 })
 export class PipesModule {}
