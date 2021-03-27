@@ -40,7 +40,7 @@ const routes: Routes = [
   providers: [
     AddPostResolver,
     PostService,
-    CategoryService
+    CategoryService,
   ]
 })
 export class AddPostPageModule {}
