@@ -75,7 +75,12 @@ ion-content::part(background)
 {
   background: var(--page-background) !important;
 }
-
+ion-item::part(native){
+  background: var(--page-background) !important;
+}
+.inputs-list {
+  --ion-item-background: var(--page-background);
+}
 .scroll {
   margin: 4px, 4px;
   padding: 4px;
@@ -110,7 +115,7 @@ ion-content::part(background)
 .reminder-row {
   --ion-grid-columns: 10;
   --ion-grid-column-padding: 0px;
-
+width: 100%;
   margin: 0px calc(var(--page-users-pictures-gutter) * -1);
   .item-wrapper {
     --col-item-width: 2;
@@ -121,6 +126,14 @@ ion-content::part(background)
 .title_{
   overflow: hidden;
   margin-bottom: 8px;
+}
+ion-input, ion-icon, ion-label, ion-textarea, ion-select, ion-reorder{
+  color: white;
+}
+ion-reorder{
+  position: absolute;
+  top: -10px;
+  right: 6px;
 }
 .cat-item{
   background: #474d52;
@@ -152,7 +165,7 @@ ion-content::part(background)
   --ion-grid-column-padding: var(--page-categories-gutter);
 
   padding: calc(var(--page-categories-gutter) * 3);
-  height: 100%;
+  min-height: 80vh;
   align-content: flex-start;
   overflow: scroll;
 

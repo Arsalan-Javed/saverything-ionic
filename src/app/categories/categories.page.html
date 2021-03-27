@@ -10,56 +10,72 @@
 </ion-header> -->
 
 <ion-content>
+  <ion-list class="inputs-list" lines="full">
+    <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
+      <ng-container *ngFor="let item of itemsOrder" >
+        <ion-item>
+          <ng-container [ngSwitch]="item.name">
+            <ion-row *ngSwitchCase="'reminder'" class="reminder-row">
+              <ion-col size="md" (click)="onReminderList()" class="item-wrapper item_ ion_">
+                  <img src="../../assets/images/reminder.png">
+              </ion-col>
+              <ion-col  class="scroll">
+                <ion-col (click)="editReminder(item)" class="item-wrapper item_" *ngFor="let item of homeDate?.Item?.UserReminders">
+                  <div class="title_">{{ item.title }}</div>
+                  <div> {{ item.date | appDateFormat }} </div>
+                </ion-col>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngSwitchCase="'categories'" class="reminder-row">
+              <ion-col  class="scroll">
+                <ion-col class="item-wrapper cat-item" (click)="loadPosts(item)" *ngFor="let item of homeDate?.Item?.CategoriesList">
+                  <div>{{ item.title }}</div>
+                </ion-col>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngSwitchCase="'checklist'" class="reminder-row">
+              <ion-col size="md" (click)="onCheckList()" class="item-wrapper item_ ion_">
+                  <img src="../../assets/images/checklist.png">
+              </ion-col>
+              <ion-col  class="scroll">
+                <ion-col class="item-wrapper item_" *ngFor="let item of homeDate?.Item?.UserCheckLists?.checklist">
+                  <div>{{ item.title }}</div>
+                </ion-col>
+              </ion-col>
+            </ion-row>
+            <ion-content *ngSwitchCase="'posts'" class="posts-list">
+              <ion-row *ngFor="let item of homeDate?.Item?.CategoriesList">
+                <div class="post_item min">
+                  <div class="dots"><ion-icon name="ellipsis-horizontal-outline"></ion-icon></div>
+                  <div class="detail">
+                    <h2>{{ item.name }}</h2>
+                    <p>Test test test test test test test test test test test test test test test</p>
+                  </div>
+                  <div class="img">
+                      <app-aspect-ratio [ratio]="{w: 1, h: 1}">
+                        <app-image-shell src="../../assets/sample-images/food/Cat1Foto1-1.1.png" alt="'image'"></app-image-shell>
+                      </app-aspect-ratio>
+                  </div>
+                </div>
+              </ion-row>
+            </ion-content>
+          </ng-container>
+          <ion-reorder slot="end"></ion-reorder>
+        </ion-item>
+      </ng-container>
+      
+    </ion-reorder-group>
+  </ion-list>
+</ion-content>
+ 
+  
+    
+   
 
-  <ion-row class="reminder-row">
-    <ion-col size="md" (click)="onReminderList()" class="item-wrapper item_ ion_">
-        <img src="../../assets/images/reminder.png">
-    </ion-col>
-    <ion-col  class="scroll">
-      <ion-col (click)="editReminder(item)" class="item-wrapper item_" *ngFor="let item of homeDate?.Item?.UserReminders">
-        <div class="title_">{{ item.title }}</div>
-        <div> {{ item.date | appDateFormat }} </div>
-      </ion-col>
-    </ion-col>
-  </ion-row>
+ 
 
-  <ion-row class="reminder-row">
-    <ion-col  class="scroll">
-      <ion-col class="item-wrapper cat-item" *ngFor="let item of homeDate?.Item?.CategoriesList">
-        <div>{{ item.title }}</div>
-      </ion-col>
-    </ion-col>
-  </ion-row>
 
-  <ion-row class="reminder-row">
-    <ion-col size="md" (click)="onCheckList()" class="item-wrapper item_ ion_">
-        <img src="../../assets/images/checklist.png">
-    </ion-col>
-    <ion-col  class="scroll">
-      <ion-col class="item-wrapper item_" *ngFor="let item of homeDate?.Item?.UserCheckLists?.checklist">
-        <div>{{ item.title }}</div>
-      </ion-col>
-    </ion-col>
-  </ion-row>
-
-  <ion-content class="posts-list">
-    <ion-row *ngFor="let item of items">
-      <div class="post_item min">
-        <div class="dots"><ion-icon name="ellipsis-horizontal-outline"></ion-icon></div>
-        <div class="detail">
-          <h2>{{ item.name }}</h2>
-          <p>Test test test test test test test test test test test test test test test</p>
-        </div>
-        <div class="img">
-            <app-aspect-ratio [ratio]="{w: 1, h: 1}">
-              <app-image-shell src="../../assets/sample-images/food/Cat1Foto1-1.1.png" alt="'image'"></app-image-shell>
-            </app-aspect-ratio>
-          <!-- <img src="../../assets/sample-images/food/Cat1Foto1-1.1.png"> -->
-          <!-- <img src="../../assets/images/checklist.png"> -->
-        </div>
-      </div>
-    </ion-row>
-  </ion-content>
+ 
   
 
 <!-- <ion-content>

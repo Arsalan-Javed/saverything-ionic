@@ -5,7 +5,8 @@ import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IResolvedRouteData, ResolverHelper } from '../utils/resolver-helper';
 import { CategoriesModel } from './categories.model';
-import { HomeItemModel, HomeModel } from './home.model';
+import { HomeModel } from './home.model';
+import { ItemReorderEventDetail } from '@ionic/core';
 
 @Component({
   selector: 'app-categories',
@@ -28,43 +29,22 @@ export class CategoriesPage {
     return (this.listing && this.listing.isShell) ? true : false;
   }
 
-  items: any[] = [];
-  lorem = '28-05-2020';
-  rotateImg;
-
-  images = [
-    'bandit',
-    'batmobile',
-    'blues-brothers',
-    'bueller',
-    'delorean',
-    'eleanor',
-    'general-lee',
-    'ghostbusters',
-    'knight-rider',
-    'mirth-mobile'
+  itemsOrder = [
+    {
+      name:'reminder',
+    },
+    {
+      name:'categories',
+    },
+    {
+      name:'checklist',
+    },
+    {
+      name:'posts',
+    },
   ];
-  
-  constructor(private route: ActivatedRoute,private router: Router) {
 
-    for (let i = 0; i < 100; i++) {
-      this.items.push({
-        name: this.images[Math.floor(Math.random() * Math.floor(this.lorem.length-1))],
-        imgSrc: this.getImgSrc(),
-        avatarSrc: this.getImgSrc(),
-        imgHeight: Math.floor(Math.random() * 50 + 150),
-        content: this.lorem.substring(0, Math.random() * (this.lorem.length - 100) + 100)
-      });
-
-      this.rotateImg++;
-      if (this.rotateImg === this.images.length) {
-        this.rotateImg = 0;
-      }
-    }
-   }
-
-  
-
+  constructor(private route: ActivatedRoute,private router: Router) {}
 
   ngOnInit(): void {
     this.subscriptions = this.route.data
@@ -106,14 +86,9 @@ export class CategoriesPage {
   editReminder(item){
     this.router.navigate(['app/reminder/'+item.doc_id], { replaceUrl: true });
   }
-  getImgSrc() {
-    
-    const src = 'https://dummyimage.com/600x400/${Math.round( Math.random() * 99999)}/fff.png';
-    this.rotateImg++;
-    if (this.rotateImg === this.images.length) {
-      this.rotateImg = 0;
-    }
-    return src;
+
+  loadPosts(item){
+
   }
 
   onCheckList()
@@ -123,6 +98,19 @@ export class CategoriesPage {
 
   onReminderList(){
     this.router.navigate(['app/reminder'], {  replaceUrl: true});
+  }
+
+  doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
+    // The `from` and `to` properties contain the index of the item
+    console.log('Dragged from index', ev.detail.from, 'to', ev.detail.to);
+
+    let draggedItem = this.itemsOrder.splice(ev.detail.from,1)[0];
+    this.itemsOrder.splice(ev.detail.to,0,draggedItem)
+
+    // Finish the reorder and position the item in the DOM based on
+    // where the gesture ended. This method can also be called directly
+    // by the reorder group
+    ev.detail.complete();
   }
 
   
