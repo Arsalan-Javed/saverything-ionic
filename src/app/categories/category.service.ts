@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
 import { DataStore } from '../shell/data-store';
@@ -29,6 +29,7 @@ export class CategoryService {
 
     // Collection Names
     private readonly CATEGORIES = 'Categories';
+    private readonly PREFERENCES = 'Preferences';
 
   public getListingDataSource(): Observable<CategoriesModel> {
 
@@ -93,24 +94,24 @@ export class CategoryService {
 
   public getHomeDataSource(user_id): Observable<HomeModel> {
 
-    var  dataObject = new HomeModel();
+
     const rawDataSource = new Observable<HomeModel>(observer => {
-
-      this.checkListService.getUserChecklist(user_id).then(res=>{
-        Object.assign(dataObject.Item.UserCheckLists, res.data && res.data.length>0? res.data[0] : {});
-
-        this.reminderListService.getUsersReminders(user_id).then(res=>{
-          Object.assign(dataObject.Item.UserReminders, res.data);
-
-          this.getCategoriesList().then(res=>{
-            Object.assign(dataObject.Item.CategoriesList, res.data);
-          });
-
+        
+      let api_1 = this.getUserCheckList(user_id);
+      let api_2 = this.getUserReminder(user_id);
+      let api_3 = this.getCategoriesList();
+      let api_4 = this.getUserPreference(user_id);
+        forkJoin(
+          [api_1,api_2,api_3,api_4]
+        ).subscribe(res=>{
+          var  dataObject = new HomeModel();
+          Object.assign(dataObject.Item.UserCheckLists, res[0]);
+          Object.assign(dataObject.Item.UserReminders, res[1]);
+          Object.assign(dataObject.Item.CategoriesList, res[2]);
+          Object.assign(dataObject.Item.UserPreferences, res[3]);
           observer.next(dataObject);
           observer.complete();
         });
-      });
-
     });
 
     const cachedDataSource = this.transferStateHelper.checkDataSourceState('home-data-state', rawDataSource);
@@ -140,22 +141,108 @@ export class CategoryService {
 
   public getCategoriesList(){
 
-    var $this = this;
-    return new Promise<any>((resolve, reject) => {
+    return new Observable<any>(observer => {
 
       this.afs.collection(this.CATEGORIES).snapshotChanges()
       .subscribe(res=>{
           let data  = res.map(p => { return { id: p.payload.doc.id, ...p.payload.doc.data() as {} } });
           if (data && data.length > 0) {
+            observer.next(data);
           }
-          const listing = new CategoriesModel();
-          Object.assign(listing.items, data);
-    
-          resolve({status:true, data : data});
+          else{
+            observer.next([]);
+          }
+          observer.complete();
         })
 
-      
+    });
+  }
+
+  public getUserCheckList(user_id){
+    return new Observable<any>(observer => {
+
+      this.checkListService.getUserChecklist(user_id).then(res=>{
+          var data = res.data && res.data.length>0? res.data[0] : {};
+          observer.next(data);
+          observer.complete();
+
+      }).catch(error=>{
+        observer.next({});
+        observer.complete();
       });
+
+    });
+
+  }
+
+  public getUserReminder(user_id){
+    return new Observable<any>(observer => {
+
+      this.reminderListService.getUsersReminders(user_id).then(res=>{
+          observer.next(res.data);
+          observer.complete();
+
+      }).catch(error=>{
+        observer.next([]);
+        observer.complete();
+      });
+
+    });
+
+  }
+  public getUserPreference(user_id){
+
+    return new Observable<any>(observer => {
+
+      this.afs.collection(this.PREFERENCES, ref => ref.where('user_id', '==', user_id)).snapshotChanges()
+      .subscribe(res=>{
+          let data  = res.map(p => { return { doc_id: p.payload.doc.id, ...p.payload.doc.data() as {} } });
+          if(data && data.length>0){
+            observer.next(data[0]);
+          }
+          else{
+            observer.next(null);
+          }
+          observer.complete();
+        });
+
+    });
+
+  }
+
+  public saveUserPreference(preference){
+
+    var $this = this;
+    return new Promise<any>((resolve, reject) => {
+
+      $this.afs.collection($this.PREFERENCES, ref => ref.where('user_id', '==', preference.user_id)).snapshotChanges()
+      .subscribe(res=>{
+          let data  = res.map(p => { return { doc_id: p.payload.doc.id, ...p.payload.doc.data() as {} } });
+          if(data && data.length>0){
+           // update 
+            $this.afs.collection($this.PREFERENCES).doc(data[0].doc_id).update(preference).then(function (docRef) {
+
+              resolve({status:true, message:'Saved Successfully'});
+
+            }).catch(function (error){ 
+                resolve({status:false, message:error});
+            });
+          }
+          else{
+            // Add
+            $this.afs.collection($this.PREFERENCES).add(preference).then(function (docRef) {
+
+              resolve({status:true, message:'Saved Successfully'});
+  
+            }).catch(function (error){ 
+                resolve({status:false, message:error});
+            });
+
+          }
+        });
+
+    });
+
   }
 
 

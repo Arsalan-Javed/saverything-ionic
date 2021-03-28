@@ -77,6 +77,7 @@ ion-content::part(background)
 }
 ion-item::part(native){
   background: var(--page-background) !important;
+  border: none !important;
 }
 .inputs-list {
   --ion-item-background: var(--page-background);

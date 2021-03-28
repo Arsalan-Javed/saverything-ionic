@@ -1,6 +1,5 @@
 import { Component, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { assign } from 'core-js/fn/object';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IResolvedRouteData, ResolverHelper } from '../utils/resolver-helper';
@@ -9,6 +8,9 @@ import { HomeModel } from './home.model';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { PopoverController, ToastController } from '@ionic/angular';
 import { PopoverComponent } from '../popover/popover.component';
+import { CategoryService } from './category.service';
+import * as firebase from "firebase";
+
 
 @Component({
   selector: 'app-categories',
@@ -22,7 +24,7 @@ import { PopoverComponent } from '../popover/popover.component';
 export class CategoriesPage { 
 
   subscriptions: Subscription;
-
+  user: any;
   listing: CategoriesModel;
   homeDate: HomeModel;
 
@@ -47,6 +49,7 @@ export class CategoriesPage {
   ];
 
   constructor(private route: ActivatedRoute,private router: Router,
+    private categoryService: CategoryService,
     private popovercontroller: PopoverController,public toastController: ToastController) {}
 
   ngOnInit(): void {
@@ -60,6 +63,7 @@ export class CategoriesPage {
     .subscribe((state) => {
 
       this.homeDate = state;
+      this.itemsOrder = this.homeDate.Item.UserPreferences && this.homeDate.Item.UserPreferences.itemsOrder ? this.homeDate.Item.UserPreferences.itemsOrder : this.itemsOrder;
     //   this.listing = state;
     //   this.listing.items.forEach((element,index) => {
     //     if(element.size=='medium' || element.size=='large' || element.size == '12')
@@ -79,6 +83,9 @@ export class CategoriesPage {
     //   });
 
      }, (error) => console.log(error));
+
+     this.user = firebase.auth().currentUser;
+
   }
 
 
@@ -114,6 +121,11 @@ export class CategoriesPage {
     // where the gesture ended. This method can also be called directly
     // by the reorder group
     ev.detail.complete();
+    var preference={
+      itemsOrder:this.itemsOrder,
+      user_id: this.user.uid
+    };
+    this.categoryService.saveUserPreference(preference);
   }
 
   async presentPopover(ev: any, item) {

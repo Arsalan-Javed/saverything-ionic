@@ -4,6 +4,7 @@ export class HomeItemModel {
   public UserCheckLists: any = {};
   public UserReminders: any = [];
   public CategoriesList: any = [];
+  public UserPreferences: any = {};
 
 }
 
