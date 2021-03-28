@@ -7,6 +7,8 @@ import { IResolvedRouteData, ResolverHelper } from '../utils/resolver-helper';
 import { CategoriesModel } from './categories.model';
 import { HomeModel } from './home.model';
 import { ItemReorderEventDetail } from '@ionic/core';
+import { PopoverController, ToastController } from '@ionic/angular';
+import { PopoverComponent } from '../popover/popover.component';
 
 @Component({
   selector: 'app-categories',
@@ -44,7 +46,8 @@ export class CategoriesPage {
     },
   ];
 
-  constructor(private route: ActivatedRoute,private router: Router) {}
+  constructor(private route: ActivatedRoute,private router: Router,
+    private popovercontroller: PopoverController,public toastController: ToastController) {}
 
   ngOnInit(): void {
     this.subscriptions = this.route.data
@@ -111,6 +114,25 @@ export class CategoriesPage {
     // where the gesture ended. This method can also be called directly
     // by the reorder group
     ev.detail.complete();
+  }
+
+  async presentPopover(ev: any, item) {
+    console.log(ev);
+    const popover = await this.popovercontroller.create({
+      component: PopoverComponent,
+      componentProps: { parentRef: this, item:item },
+      cssClass: "my-custom-class",
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
+    // .then(async res=>{
+    //   const toast = await this.toastController.create({
+    //     message: "Driver Delete successfully",
+    //     duration: 2000
+    //   });
+    //   toast.present();
+    // });
   }
 
   

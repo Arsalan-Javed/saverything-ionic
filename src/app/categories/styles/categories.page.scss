@@ -215,3 +215,16 @@ ion-reorder{
     height: 14px;
   }
 }
+.post-detail{
+  overflow-y: hidden;
+	transition-property: all;
+	transition-duration: .7s;
+	transition-timing-function: cubic-bezier(0, 1, 0.7, 1);
+}
+.post-detail.small{
+  min-height: 70px;
+}
+
+.post-detail.large{
+  min-height: 200px;
+}

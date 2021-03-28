@@ -8,6 +8,7 @@ import { TabsPageRoutingModule } from './tabs.router.module';
 import { TabsPage } from './tabs.page';
 import { FirebaseProfileResolver } from '../firebase/auth/profile/firebase-profile.resolver';
 import { FirebaseAuthModule } from '../firebase/auth/firebase-auth.module';
+import { PopoverComponent } from '../popover/popover.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,7 @@ import { FirebaseAuthModule } from '../firebase/auth/firebase-auth.module';
     TabsPageRoutingModule,
     FirebaseAuthModule
   ],
-  declarations: [ TabsPage ],
+  declarations: [ TabsPage,PopoverComponent ],
   providers: [
     FirebaseProfileResolver
   ]

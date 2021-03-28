@@ -45,10 +45,11 @@
             </ion-row>
             <ion-content *ngSwitchCase="'posts'" class="posts-list">
               <ion-row *ngFor="let item of homeDate?.Item?.CategoriesList">
-                <div class="post_item min">
-                  <div class="dots"><ion-icon name="ellipsis-horizontal-outline"></ion-icon></div>
+                <div class="post_item">
+                  <div class="dots"><ion-icon (click)="presentPopover($event,item)" name="ellipsis-horizontal-outline"></ion-icon></div>
+                 <div [class]="item?.size" class="post-detail">
                   <div class="detail">
-                    <h2>{{ item.name }}</h2>
+                    <h2>{{ item.name }} {{ item?.size }}</h2>
                     <p>Test test test test test test test test test test test test test test test</p>
                   </div>
                   <div class="img">
@@ -56,6 +57,7 @@
                         <app-image-shell src="../../assets/sample-images/food/Cat1Foto1-1.1.png" alt="'image'"></app-image-shell>
                       </app-aspect-ratio>
                   </div>
+                 </div>
                 </div>
               </ion-row>
             </ion-content>
