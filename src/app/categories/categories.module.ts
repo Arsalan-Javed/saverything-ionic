@@ -11,6 +11,7 @@ import { CategoryService } from './category.service';
 import { ReminderListService } from '../reminder-list/reminder-list.service';
 import { CheckListService } from '../check-list/check-list.service';
 import { PipesModule } from '../pipes/pipes.module';
+import { PostService } from '../posts/post.service';
 
 const categoriesRoutes: Routes = [
   {
@@ -35,7 +36,8 @@ const categoriesRoutes: Routes = [
     CategoryResolver,
     CategoryService,
     CheckListService,
-    ReminderListService
+    ReminderListService,
+    PostService,
   ]
 })
 export class CategoriesPageModule {}

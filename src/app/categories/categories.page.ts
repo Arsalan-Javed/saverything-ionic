@@ -10,6 +10,7 @@ import { PopoverController, ToastController } from '@ionic/angular';
 import { PopoverComponent } from '../popover/popover.component';
 import { CategoryService } from './category.service';
 import * as firebase from "firebase";
+import { PostService } from '../posts/post.service';
 
 
 @Component({
@@ -50,6 +51,7 @@ export class CategoriesPage {
 
   constructor(private route: ActivatedRoute,private router: Router,
     private categoryService: CategoryService,
+    private postService : PostService,
     private popovercontroller: PopoverController,public toastController: ToastController) {}
 
   ngOnInit(): void {
@@ -64,6 +66,9 @@ export class CategoriesPage {
 
       this.homeDate = state;
       this.itemsOrder = this.homeDate.Item.UserPreferences && this.homeDate.Item.UserPreferences.itemsOrder ? this.homeDate.Item.UserPreferences.itemsOrder : this.itemsOrder;
+      if(this.homeDate.Item.CategoriesList.length>0) 
+         this.loadPosts(this.homeDate.Item.CategoriesList[0]);
+         
     //   this.listing = state;
     //   this.listing.items.forEach((element,index) => {
     //     if(element.size=='medium' || element.size=='large' || element.size == '12')
@@ -99,6 +104,9 @@ export class CategoriesPage {
 
   loadPosts(item){
 
+    this.postService.getListingDataSource(item.id).subscribe((res)=>{
+      this.homeDate.Item.PostsList = res.items? res.items: [];
+    });
   }
 
   onCheckList()

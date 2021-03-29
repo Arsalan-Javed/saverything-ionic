@@ -5,6 +5,7 @@ export class HomeItemModel {
   public UserReminders: any = [];
   public CategoriesList: any = [];
   public UserPreferences: any = {};
+  public PostsList: any = [];
 
 }
 
