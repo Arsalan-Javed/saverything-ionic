@@ -12,6 +12,8 @@ import { AddPostResolver } from './add-post.resolver';
 import { AddPostPage } from './add-post.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from  '../../categories/category.service';
+import { CheckListService } from '../../check-list/check-list.service';
+import { ReminderListService } from '../../reminder-list/reminder-list.service';
 
 
 const routes: Routes = [
@@ -41,6 +43,8 @@ const routes: Routes = [
     AddPostResolver,
     PostService,
     CategoryService,
+    CheckListService,
+    ReminderListService
   ]
 })
 export class AddPostPageModule {}
