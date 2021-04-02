@@ -26,6 +26,7 @@ export interface imgFile {
 export class AddPostPage implements OnInit {
 
     button_title = "Post";
+    screen_title= "Share Post"
     back="";
     tags = [];
     categoriesList: any;
@@ -135,6 +136,7 @@ export class AddPostPage implements OnInit {
         // Get Post Data
         this.back = "app/categories/posts/"+ this.category_id +"/post-detail/"+this.post_id;
         this.button_title = "Post";
+        this.screen_title = "Edit Post";
         this.postService.getDetailsDataSource(this.post_id)
         .subscribe((state) => {
           this.validationsForm.get('title').setValue(state.title);
@@ -154,7 +156,7 @@ export class AddPostPage implements OnInit {
       }
       else if(this.category_id)
       {
-        this.back = "app/categories/posts/"+this.category_id;
+        this.back = "app/categories";//"/posts/"+this.category_id;
         this.validationsForm.get('category_id').setValue(this.category_id);
       }
     }

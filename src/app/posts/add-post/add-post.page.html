@@ -1,9 +1,9 @@
 <ion-header>
     <ion-toolbar color="primary">
       <ion-buttons slot="start" (click)="onBack()">
-        <!-- <ion-back-button [defaultHref]="back"></ion-back-button> -->
+        <ion-back-button *ngIf="post_id" [defaultHref]="back"></ion-back-button>
       </ion-buttons>
-      <ion-title>Share Post</ion-title>
+      <ion-title>{{ screen_title }}</ion-title>
     </ion-toolbar>
 </ion-header>
 

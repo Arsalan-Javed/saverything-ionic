@@ -183,11 +183,17 @@ ion-reorder{
     padding-right: 0px;
     padding-top: 3px;
     padding-left: 10px;
+    
+    a{
+      color: white;
+      text-decoration: none;
+    }
     h2{
       margin: 0px;
     }
     p{
       margin: 0px;
+      font-size: 11px;
     }
     .detail{
       width: 82%;

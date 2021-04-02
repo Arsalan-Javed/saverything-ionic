@@ -49,7 +49,9 @@
                   <div class="dots"><ion-icon (click)="presentPopover($event,item)" name="ellipsis-horizontal-outline"></ion-icon></div>
                  <div [class]="item?.size" class="post-detail">
                   <div class="detail">
-                    <h2>{{ item.title }}</h2>
+                    <a class="name-anchor" [routerLink]="['/app/categories/posts',item.category_id,'post-detail',item.post_id]" >
+                      <h2>{{ item.title }}</h2>
+                    </a>
                     <p>{{ item.description }}</p>
                   </div>
                   <div class="img">
