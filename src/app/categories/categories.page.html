@@ -70,17 +70,29 @@
       
     </ion-reorder-group>
   </ion-list>
-</ion-content>
- 
   
-    
-   
-
- 
-
-
- 
-  
+  <!-- <ion-list class="shall-list">
+      <ion-item *ngIf="homeDate?.Item?.UserReminders.length>=0">
+        <ion-row class="reminder-row" >
+          <ion-col size="md" class="item-wrapper item_ ion_">
+            <app-aspect-ratio class="shell-img">
+              <app-image-shell animation="gradient" [src]="item?.img" [alt]="'Sample Image'"></app-image-shell>
+            </app-aspect-ratio>
+          </ion-col>
+          <ion-col  class="scroll">
+            <ion-col class="item-wrapper item_" let="item" >
+              <div class="title_"><app-text-shell [data]="item?.title" animation="gradient"></app-text-shell></div>
+              <div><app-text-shell [data]="item?.date" animation="gradient"></app-text-shell> </div>
+            </ion-col>
+            <ion-col class="item-wrapper item_" let="item" >
+              <div class="title_"><app-text-shell [data]="item?.title" animation="gradient"></app-text-shell></div>
+              <div><app-text-shell [data]="item?.date" animation="gradient"></app-text-shell> </div>
+            </ion-col>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+  </ion-list>
+</ion-content> -->
 
 <!-- <ion-content>
   <ion-row *ngIf="listing?.items" class="categories-list">

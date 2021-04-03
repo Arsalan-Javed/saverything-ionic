@@ -223,6 +223,9 @@ ion-reorder{
     height: 14px;
   }
 }
+ion-list{
+  background: var(--page-background);
+}
 .post-detail{
   overflow-y: hidden;
 	transition-property: all;
@@ -235,4 +238,16 @@ ion-reorder{
 
 .post-detail.large{
   min-height: 200px;
+}
+
+.shall-list{
+
+  .shell-img{
+    width: 90px;
+    height: 75px;
+    border-radius: 10px;
+  }
+  .item_{
+    background: none;
+  }
 }
