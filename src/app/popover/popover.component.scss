@@ -1,0 +1,8 @@
+.list-md{
+    background: #283035;
+}
+
+ion-item::part(native){
+    background: #283035 !important;
+    color: white !important;
+}
