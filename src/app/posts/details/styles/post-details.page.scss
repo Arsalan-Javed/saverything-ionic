@@ -165,6 +165,7 @@
   }
   app-text-shell{
     color: white;
+    font-size: 11px;
   }
 
   .open-hours-wrapper {
@@ -277,7 +278,7 @@
 
   .details-divider {
     margin: 0px var(--page-margin) calc(var(--page-margin) * 2);
-    border-top: 2px solid rgba(var(--ion-color-light-shade-rgb), .4);
+    border-top: 1px solid rgba(var(--ion-color-light-shade-rgb), .4);
   }
 
   .users-pictures-wrapper {

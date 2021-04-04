@@ -288,5 +288,19 @@ export class PostService {
     if(url)
       this.afStorage.storage.refFromURL(url).delete();
   }
+
+  updatePostSize(post){
+
+    var $this = this;
+    return new Promise<any>((resolve, reject) => {
+      $this.afs.collection(this.POSTS).doc(post.post_id).update({
+        size:post.size
+      }).then(res => {
+        resolve({status:true, message:'Updated Successfully'});
+      }).catch(function (error) { resolve({status:false, message:error});});
+    });
+    
+
+  }
   
 }
