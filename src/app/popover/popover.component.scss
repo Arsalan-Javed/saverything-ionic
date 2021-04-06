@@ -5,4 +5,7 @@
 ion-item::part(native){
     background: #283035 !important;
     color: white !important;
+    .item-inner{
+        border: none;
+    }
 }

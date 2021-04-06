@@ -13,7 +13,7 @@
   <ion-list class="inputs-list" lines="full">
     <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
       <ng-container *ngFor="let item of itemsOrder" >
-        <ion-item>
+        <ion-item [ngClass]="{'posts-list-item':item?.name == 'posts'}">
           <ng-container [ngSwitch]="item.name">
             <ion-row *ngSwitchCase="'reminder'" class="reminder-row">
               <ion-col size="md" (click)="onReminderList()" class="item-wrapper item_ ion_">
@@ -45,21 +45,43 @@
             </ion-row>
             <ion-content *ngSwitchCase="'posts'" class="posts-list">
               <ion-row *ngFor="let item of homeDate?.Item?.PostsList">
-                <div class="post_item">
-                  <div class="dots"><ion-icon (click)="presentPopover($event,item)" name="ellipsis-horizontal-outline"></ion-icon></div>
-                 <div [class]="item?.size" class="post-detail">
-                  <div class="detail">
-                    <a class="name-anchor" [routerLink]="['/app/categories/posts',item.category_id,'post-detail',item.post_id]" >
-                      <h2>{{ item.title }}</h2>
-                    </a>
-                    <p>{{ item.description }}</p>
-                  </div>
-                  <div class="img">
-                      <app-aspect-ratio [ratio]="{w: 1, h: 1}">
-                        <app-image-shell [src]="item.title_picture" alt="'image'"></app-image-shell>
-                      </app-aspect-ratio>
-                  </div>
-                 </div>
+                <div class="post_item" [class]="item?.size">
+                    <div class="dots"><ion-icon (click)="presentPopover($event,item)" name="ellipsis-horizontal-outline"></ion-icon></div>
+                    <div [ngClass]="{'small-title-image':item?.size == 'small','large-title-image':item?.size == 'large'}">
+                      <a [routerLink]="['/app/categories/posts',item.category_id,'post-detail',item.post_id]" >
+                        <app-aspect-ratio *ngIf="item?.size == 'small'" [ratio]="{w:1, h:1}">
+                          <app-image-shell [src]="item.title_picture" alt="'image'"></app-image-shell>
+                        </app-aspect-ratio>
+                        <app-aspect-ratio style="border-radius: 10px;" *ngIf="item?.size == 'large'" [ratio]="{w:70, h:35}">
+                          <app-image-shell [src]="item.title_picture" alt="'image'"></app-image-shell>
+                        </app-aspect-ratio>
+                      </a>
+                   </div>
+                   <div class="detail">
+                      <div class="title"> 
+                        <a [routerLink]="['/app/categories/posts',item.category_id,'post-detail',item.post_id]" >
+                          <h2>{{ item.title }}</h2>
+                        </a>
+                      </div>
+                        <p class="description">{{ item.description }}</p>
+                      <ion-row *ngIf="item.tags.length>0" class="item-tags">
+                          <ion-col class="tag-wrapper" *ngFor="let tag of item.tags">
+                            <span class="item-tag">
+                              <app-text-shell [data]="tag"></app-text-shell>
+                            </span>
+                          </ion-col>
+                      </ion-row>
+                      <ion-row class="pictures-row">
+                        <ion-col class="picture-wrapper" *ngFor="let picture of item?.additional_pictures?.slice(0, 5); let i = index">
+                          <app-aspect-ratio [ratio]="{w:1, h:1}">
+                            <app-image-shell class="user-picture-image" [src]="picture" [alt]="'user image'"></app-image-shell>
+                          </app-aspect-ratio>
+                          <a class="has-more-pictures" *ngIf="i == 4 && item?.additional_pictures?.length > 5" [routerLink]="['/app/categories/posts',item.category_id,'post-detail',item.post_id]">
+                            <span class="pictures-count">{{ item?.additional_pictures?.length - 5 }}</span>
+                          </a>
+                        </ion-col>
+                      </ion-row>
+                   </div>
                 </div>
               </ion-row>
             </ion-content>
@@ -67,29 +89,6 @@
           <ion-reorder slot="end"></ion-reorder>
         </ion-item>
       </ng-container>
-      
     </ion-reorder-group>
   </ion-list>
-  
-  <!-- <ion-list class="shall-list">
-      <ion-item *ngIf="homeDate?.Item?.UserReminders.length>=0">
-        <ion-row class="reminder-row" >
-          <ion-col size="md" class="item-wrapper item_ ion_">
-            <app-aspect-ratio class="shell-img">
-              <app-image-shell animation="gradient" [src]="item?.img" [alt]="'Sample Image'"></app-image-shell>
-            </app-aspect-ratio>
-          </ion-col>
-          <ion-col  class="scroll">
-            <ion-col class="item-wrapper item_" let="item" >
-              <div class="title_"><app-text-shell [data]="item?.title" animation="gradient"></app-text-shell></div>
-              <div><app-text-shell [data]="item?.date" animation="gradient"></app-text-shell> </div>
-            </ion-col>
-            <ion-col class="item-wrapper item_" let="item" >
-              <div class="title_"><app-text-shell [data]="item?.title" animation="gradient"></app-text-shell></div>
-              <div><app-text-shell [data]="item?.date" animation="gradient"></app-text-shell> </div>
-            </ion-col>
-          </ion-col>
-        </ion-row>
-      </ion-item>
-  </ion-list>
-</ion-content> -->
+</ion-content> 
